@@ -12,22 +12,24 @@ class Kernel extends HttpKernel
 
     protected $middlewareGroups = [
         'web' => [
-            \App\Http\Middleware\EncryptCookies::class,
+            // \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-            \App\Http\Middleware\VerifyCsrfToken::class,
+            // \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
 
-        'api' => [  // أضف هذا إذا لم يكن موجودًا
+        'api' => [
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
     ];
 
-    protected $middlewareAliases = [
-        // أضف middleware مخصصة هنا لاحقًا، مثل 'role'
-    ];
+   protected $middlewareAliases = [
+    'role' => \App\Http\Middleware\CheckRole::class,
+  ];
+
+
 }
