@@ -15,6 +15,7 @@ class CheckRole
      */
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
+        
         if (! $request->user() || ! $request->user()->hasAnyRole($roles)) {
             return redirect('/');  // أو 403
         }
