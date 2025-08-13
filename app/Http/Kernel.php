@@ -8,9 +8,6 @@ class Kernel extends HttpKernel
 {
     protected $middleware = [
         // ... middleware عام
-    ];
-
-    protected $middlewareGroups = [
         'web' => [
             // \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
@@ -19,12 +16,15 @@ class Kernel extends HttpKernel
             // \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
-
+    
         'api' => [
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
+    ];
+
+    protected $middlewareGroups = [
     ];
 
    protected $middlewareAliases = [

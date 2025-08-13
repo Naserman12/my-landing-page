@@ -7,9 +7,21 @@ use Illuminate\Http\Request;
 class ProfileController extends Controller
 {
     public function show(Request $request)
-    {
-        return response()->json($request->user()->profile);
+{
+    $user = $request->user();
+    if (!$user) {
+        return response()->json(['message' => 'Unauthorized'], 401);
     }
+
+    $profile = $user->profile;
+
+    if (!$profile) {
+        return response()->json(['message' => 'Profile not found'], 404);
+    }
+
+    return response()->json($user->profile, 200);
+}
+    
 
     public function update(Request $request)
     {

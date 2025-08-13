@@ -15,7 +15,7 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:8',
         ]);
 
         $user = User::create([
@@ -23,17 +23,15 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
-
+        $user->assignRole('user'); // تعيين دور مستخدم عادي
         $user->profile()->create([
             'full_name' => $request->name,
+            'bio' => 'bio',
+            'avatar' => 'url',
         ]);
-
-        $user->assignRole('user'); // تعيين دور مستخدم عادي
-        $token = $user->createToken('api-token')->plainTextToken;
-
+        $token = $user->createToken('register-token')->plainTextToken;
         return response()->json(['user' => $user, 'token' => $token], 201);
     }
-
     public function login(Request $request)
     {
         $request->validate([
@@ -42,22 +40,42 @@ class AuthController extends Controller
         ]);
 
         $user = User::where('email', $request->email)->first();
-
-        if (! $user || ! Hash::check($request->password, $user->password)) {
+        if (!$user || !Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
         }
-
-        $token = $user->createToken('api-token')->plainTextToken;
-
-        return response()->json(['user' => $user, 'token' => $token]);
+           $user->tokens()->delete();
+        $token = $user->createToken('login-token')->plainTextToken;
+        return response()->json(['user' => $user, 'token' => $token], 200);
     }
+    // public function logout(Request $request)
+    // {
+    //    $token =  $request->user()->currentAccessToken();
+    //      if ($token) {
+    //     $token->delete();
+    //     } else {
+    //         return response()->json(['message' => 'No active session found.'], 400);
+    //     }
 
+    //     return response()->json(['message' => 'Logged out']);
+    // }
     public function logout(Request $request)
-    {
-        $request->user()->currentAccessToken()->delete();
-
-        return response()->json(['message' => 'Logged out']);
+{
+    // احصل على access token مباشرة بدون تحميل user كامل
+    $accessToken = $request->bearerToken();
+    if (!$accessToken) {
+        return response()->json(['message' => 'No token provided'], 401);
     }
+    // ابحث عن التوكن في قاعدة البيانات
+    $token = \Laravel\Sanctum\PersonalAccessToken::findToken($accessToken);
+    if (!$token) {
+        return response()->json(['message' => 'Invalid token'], 401);
+    }
+    // احذف التوكن
+    $token->delete();
+
+    return response()->json(['message' => 'Logged out']);
+}
+
 }
