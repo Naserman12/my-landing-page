@@ -33,7 +33,6 @@ class ServiceController extends Controller
             'data' => $service
         ], 201);
     }
-
     /**
      * Update the specified resource in storage.
      */

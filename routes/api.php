@@ -24,14 +24,15 @@ Route::get('/achievements/{id}', [AchievementController::class, 'show']);
 Route::get('/videos', [VideoController::class, 'index']);
 // videos
 Route::get('/videos{id}', [VideoController::class, 'show']);
-// content 
-Route::post('/contact', [ContactController::class, 'store']); // متاح للجميع
+// contact 
+Route::middleware(['throttle:contact'])->post('/contact', [ContactController::class, 'store']);
+
 // services
 Route::get('/services', [ServiceController::class, 'index']);
 // Route::get('/s/{code}', [ShortLinkController::class, 'redirect'])->name('shortlink.redirect');
 
 Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(function () {
-    // content us تواصل معنا
+    // contact us تواصل معنا
     Route::get('/contacts', [ContactController::class, 'index']);
     Route::delete('/contacts/{id}', [ContactController::class, 'destroy']);
     // services الخدمات
