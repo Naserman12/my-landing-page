@@ -30,6 +30,7 @@ class Kernel extends HttpKernel
    protected $middlewareAliases = [
     'role' => \App\Http\Middleware\CheckRole::class,
   ];
+  
 
 
 }

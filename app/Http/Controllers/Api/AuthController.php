@@ -7,6 +7,9 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+
 
 class AuthController extends Controller
 {
@@ -30,7 +33,7 @@ class AuthController extends Controller
             'avatar' => 'url',
         ]);
         $token = $user->createToken('register-token')->plainTextToken;
-        return response()->json(['user' => $user, 'token' => $token], 201);
+        return response()->json([['user' => $user, 'roles' => $user->role], 'token' => $token], 201);
     }
     public function login(Request $request)
     {
@@ -75,7 +78,7 @@ class AuthController extends Controller
     // احذف التوكن
     $token->delete();
 
-    return response()->json(['message' => 'Logged out']);
+    return response()->json(['message' => 'Logged out'], 200);
 }
 
 }

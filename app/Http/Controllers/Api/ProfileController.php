@@ -19,7 +19,7 @@ class ProfileController extends Controller
         return response()->json(['message' => 'Profile not found'], 404);
     }
 
-    return response()->json($user->profile, 200);
+    return response()->json([$user->profile], 200);
 }
     
 
