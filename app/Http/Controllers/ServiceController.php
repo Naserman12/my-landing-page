@@ -7,17 +7,10 @@ use Illuminate\Http\Request;
 
 class ServiceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
+    public function index() {
         return response()->json(Service::all());
 
     }
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -33,9 +26,6 @@ class ServiceController extends Controller
             'data' => $service
         ], 201);
     }
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, $id)
     {
         $service = Service::findOrFail($id);
@@ -50,9 +40,6 @@ class ServiceController extends Controller
             'data' => $service
         ]);
     }
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($id)
     {
          $service = Service::findOrFail($id);

@@ -9,17 +9,11 @@ use Illuminate\Support\Facades\Validator;
 
 class ContactController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
           // عرض الرسائل (للمدير فقط)
          return response()->json(Contact::latest()->paginate(10));
     }
-      /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
          $data = Validator::make($request->all(), [
@@ -42,10 +36,6 @@ class ContactController extends Controller
             'data' => $contact
         ], 201);
     }
-    /**
-     * Remove the specified resource from storage.
-     */
-    // حذف رسالة
     public function destroy($id)
     {
         $contact = Contact::findOrFail($id);

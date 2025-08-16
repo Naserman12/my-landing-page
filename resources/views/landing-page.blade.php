@@ -22,7 +22,7 @@
                         <h3 class="font-bold">{{ $a->title ?? 'لا يوجد' }}</h3>
                         <p>{{ $a->description ?? 'لا يوجد'}}</p>
                         @if($a->short_code)
-                            <a href="{{ url('api/s/'.$a->short_code) }}" class="text-blue-500">عرض المزيد</a>
+                        <a href="{{ url('api/s/'.$a->short_code) }}" class="text-blue-500">عرض المزيد</a>
                         @endif
                     </div>
                 @endforeach
@@ -33,8 +33,9 @@
             <h2 class="text-xl font-semibold mb-2">🎥 الفيديوهات</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 @foreach($videos as $v)
-                    <div class="bg-white p-4 rounded shadow">
-                        <h3 class="font-bold">{{ $v->title ?? 'لا يوجد' }}</h3>
+                <div class="bg-white p-4 rounded shadow">
+                    <h3 class="font-bold">{{ $v->title ?? 'لا يوجد' }}</h3>
+                    <p>Views : {{ $v->shortLink->clicks ?? 'لا يوجد'}}</p>
                         <p>الرابط المختصر :{{ $v->shortLink->full_short_url ?? 'لم يتم العثور على رابط'}}</p>
                         <iframe width="100%" height="200" src="https://www.youtube.com/embed/{{ $v->shortLink->full_short_url }}" frameborder="0" allowfullscreen></iframe>
                     </div>

@@ -18,16 +18,12 @@ class VideoController extends Controller
         //
          return Video::with('shortLink')->latest()->get();
     }
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
        $data = $request->validate([
         'title' => 'required|string',
         'url' => 'required|url',
     ]);
-
     // إنشاء رابط قصير للفيديو
     $shortLink = ShortLink::create([
         'title' => $data['title'],
@@ -35,7 +31,6 @@ class VideoController extends Controller
         'short_code' => Str::random(6),
         'clicks' => 0
     ]);
-
     $video = Video::create([
         'title' => $data['title'],
         'url' => $data['url'],

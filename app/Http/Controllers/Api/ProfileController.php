@@ -21,8 +21,6 @@ class ProfileController extends Controller
 
     return response()->json([$user->profile], 200);
 }
-    
-
     public function update(Request $request)
     {
         $request->validate([

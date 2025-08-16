@@ -50,20 +50,8 @@ class AuthController extends Controller
         $token = $user->createToken('login-token')->plainTextToken;
         return response()->json(['user' => $user, 'token' => $token], 200);
     }
-    // public function logout(Request $request)
-    // {
-    //    $token =  $request->user()->currentAccessToken();
-    //      if ($token) {
-    //     $token->delete();
-    //     } else {
-    //         return response()->json(['message' => 'No active session found.'], 400);
-    //     }
-
-    //     return response()->json(['message' => 'Logged out']);
-    // }
-    public function logout(Request $request)
-{
-    // احصل على access token مباشرة بدون تحميل user كامل
+    public function logout(Request $request){
+    // الحصول على access token مباشرة بدون تحميل user كامل
     $accessToken = $request->bearerToken();
     if (!$accessToken) {
         return response()->json(['message' => 'No token provided'], 401);
