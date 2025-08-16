@@ -12,7 +12,6 @@
         <h1 class="text-xl font-bold">لوحة التحكم</h1>
         <a href="/" class="hover:underline">العودة للموقع</a>
     </nav>
-
     <div class="max-w-6xl mx-auto p-6">
         <!-- الإحصائيات -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">

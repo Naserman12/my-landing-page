@@ -28,8 +28,16 @@ class SiteInfoController extends Controller
         if ($request->hasFile('logo')) {
             $data['logo'] = $request->file('logo')->store('logos', 'public');
         }
+        
 
-        $siteInfo = SiteInfo::create($data);
+        $siteInfo = SiteInfo::first();
+         if ($siteInfo) {
+        // إذا موجود → تحديث
+            $siteInfo->update($data);
+        } else {
+            // إذا ما في → إنشاء جديد
+            SiteInfo::create($data);
+        }
 
         return response()->json([
             'message' => 'Site info created successfully',

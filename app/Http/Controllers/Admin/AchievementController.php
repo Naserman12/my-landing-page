@@ -59,10 +59,9 @@ class AchievementController extends Controller
     $achievement = Achievement::where('short_code', $id)
                     ->orWhere('id', $id)
                     ->firstOrFail();
-
     return response()->json([
         'data' => $achievement,
-        'short_url' => url('/s/' . $achievement->short_code)
+        'short_url' => url('/s/' . $achievement->short_code),
     ]);
     }
     /**

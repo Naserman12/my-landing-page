@@ -7,10 +7,12 @@
 </head>
 <body class="bg-gray-100 font-sans">
     <header class="bg-white shadow p-4 text-center">
-        <h1 class="text-2xl font-bold">{{ $siteInfo->title ?? 'اسم الموقع' }}</h1>
+        <h1 class="text-2xl font-bold">{{ $siteInfo->site_name ?? 'اسم الموقع' }}</h1>
         <p class="text-gray-600">{{ $siteInfo->description ?? 'لا يوجد' }}</p>
+          @if($siteInfo && $siteInfo->logo)
+        <img src="{{ asset('storage/'.$siteInfo->logo) }}" alt="شعار الموقع" class="mx-auto mt-2 h-16">
+         @endif
     </header>
-
     <main class="max-w-4xl mx-auto p-4">
         <section class="mb-6">
             <h2 class="text-xl font-semibold mb-2">🏆 الإنجازات</h2>
@@ -20,7 +22,7 @@
                         <h3 class="font-bold">{{ $a->title ?? 'لا يوجد' }}</h3>
                         <p>{{ $a->description ?? 'لا يوجد'}}</p>
                         @if($a->short_code)
-                            <a href="{{ url('/s/'.$a->short_code) }}" class="text-blue-500">عرض المزيد</a>
+                            <a href="{{ url('api/s/'.$a->short_code) }}" class="text-blue-500">عرض المزيد</a>
                         @endif
                     </div>
                 @endforeach
@@ -33,7 +35,8 @@
                 @foreach($videos as $v)
                     <div class="bg-white p-4 rounded shadow">
                         <h3 class="font-bold">{{ $v->title ?? 'لا يوجد' }}</h3>
-                        <iframe width="100%" height="200" src="{{ $v->url }}" frameborder="0" allowfullscreen></iframe>
+                        <p>الرابط المختصر :{{ $v->shortLink->full_short_url ?? 'لم يتم العثور على رابط'}}</p>
+                        <iframe width="100%" height="200" src="https://www.youtube.com/embed/{{ $v->shortLink->full_short_url }}" frameborder="0" allowfullscreen></iframe>
                     </div>
                 @endforeach
             </div>

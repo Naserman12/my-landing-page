@@ -9,9 +9,9 @@ use App\Http\Controllers\Admin\ShortLinkController;
 use App\Http\Controllers\Admin\VideoController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ServiceController;
-Route::post('/register', [AuthController::class, 'register'])->name('register');
-Route::post('/login', [AuthController::class, 'login'])->name('login');
-Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/profile', [ProfileController::class, 'show']);
     Route::put('/profile', [ProfileController::class, 'update']);
@@ -20,10 +20,10 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
 Route::get('/site-info', [SiteInfoController::class, 'index']);
 // achievements
 Route::get('/achievements', [AchievementController::class, 'index']);
-Route::get('/achievements/{id}', [AchievementController::class, 'show']);
+Route::get('/s/{id}', [AchievementController::class, 'show']);
 Route::get('/videos', [VideoController::class, 'index']);
 // videos
-Route::get('/videos{id}', [VideoController::class, 'show']);
+Route::get('/s/{id}', [VideoController::class, 'show']);
 // contact 
 Route::middleware(['throttle:contact'])->post('/contact', [ContactController::class, 'store']);
 

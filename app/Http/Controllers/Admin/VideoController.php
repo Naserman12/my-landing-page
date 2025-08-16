@@ -52,7 +52,7 @@ class VideoController extends Controller
      */
     public function show(string $id)
     {
-         $video = Video::where('short_code', $id)
+         $video = Video::where('short_link_id', $id)
                       ->orWhere('id', $id)
                       ->firstOrFail();
 
@@ -61,7 +61,6 @@ class VideoController extends Controller
             'short_url' => url('/s/' . $video->short_code)
         ]);
     }
-
     /**
      * Update the specified resource in storage.
      */
