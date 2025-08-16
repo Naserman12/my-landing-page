@@ -29,7 +29,7 @@ Route::middleware(['throttle:contact'])->post('/contact', [ContactController::cl
 
 // services
 Route::get('/services', [ServiceController::class, 'index']);
-// Route::get('/s/{code}', [ShortLinkController::class, 'redirect'])->name('shortlink.redirect');
+// Route::get('/s/{code}', [ShortLinkController::class, 'redirect'])->name('shortlink.redirect'); تم نقله الى web.php
 
 Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(function () {
     // contact us تواصل معنا

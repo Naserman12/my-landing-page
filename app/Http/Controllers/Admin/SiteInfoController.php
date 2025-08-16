@@ -24,12 +24,9 @@ class SiteInfoController extends Controller
             'twitter' => 'nullable|url',
             'instagram' => 'nullable|url',
         ]);
-
         if ($request->hasFile('logo')) {
             $data['logo'] = $request->file('logo')->store('logos', 'public');
         }
-        
-
         $siteInfo = SiteInfo::first();
          if ($siteInfo) {
         // إذا موجود → تحديث
@@ -38,13 +35,11 @@ class SiteInfoController extends Controller
             // إذا ما في → إنشاء جديد
             SiteInfo::create($data);
         }
-
         return response()->json([
             'message' => 'Site info created successfully',
             'data' => $siteInfo
         ]);
     }
-
     public function update(Request $request, $id)
     {
         $siteInfo = SiteInfo::findOrFail($id);
@@ -64,7 +59,6 @@ class SiteInfoController extends Controller
         $siteInfo->update($data);
         return $siteInfo;
     }
-
     public function destroy(SiteInfo $siteInfo)
     {
         $siteInfo->delete();

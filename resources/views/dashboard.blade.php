@@ -31,6 +31,10 @@
                 <h2 class="text-lg font-bold text-gray-700">الخدمات</h2>
                 <p id="services-count" class="text-3xl font-bold text-purple-500">0</p>
             </div>
+            <div class="bg-white p-4 rounded-lg shadow">
+                <h2 class="text-lg font-bold text-gray-700">المشاهدات</h2>
+                <p id="show-count" class="text-3xl font-bold text-purple-500">0</p>
+            </div>
         </div>
         <!-- فورم إعدادات الموقع -->
     <div class="bg-white p-6 rounded-lg shadow mb-6">
@@ -72,6 +76,7 @@
                         <th class="border p-2">#</th>
                         <th class="border p-2">العنوان</th>
                         <th class="border p-2">الوصف</th>
+                        <th class="border p-2">إجراءات</th>
                         <th class="border p-2">إجراءات</th>
                     </tr>
                 </thead>
@@ -146,6 +151,7 @@
             document.getElementById('achievements-count').textContent = achievements.length;
             document.getElementById('videos-count').textContent = videos.length;
             document.getElementById('services-count').textContent = services.length;
+            document.getElementById('show-count').textContent = achievements.click;
 
             // عرض الإنجازات
             let achievementsTable = document.getElementById('achievements-table');
