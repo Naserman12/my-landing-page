@@ -9,8 +9,8 @@ use App\Http\Controllers\Admin\ShortLinkController;
 use App\Http\Controllers\Admin\VideoController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ServiceController;
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register'])->name('register');
+Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/profile', [ProfileController::class, 'show']);

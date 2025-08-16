@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ $siteInfo->title ?? 'صفحة ترحيبية' }}</title>
-    @vite('resources/css/app.css')
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 font-sans">
     <header class="bg-white shadow p-4 text-center">
