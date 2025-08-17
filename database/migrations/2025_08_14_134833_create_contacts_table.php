@@ -17,6 +17,7 @@ return new class extends Migration
         $table->string('email');
         $table->string('subject')->nullable();
         $table->text('message');
+        $table->string('ip_address')->nullable();
         $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
         $table->timestamps();
     });

@@ -13,22 +13,22 @@ class VideoController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
+    public function index() {
         //
          return Video::with('shortLink')->latest()->get();
     }
-    public function store(Request $request)
-    {
+    public function store(Request $request){
        $data = $request->validate([
         'title' => 'required|string',
-        'url' => 'required|url',
+        'url' => 'required|url|max:255',
     ]);
     // إنشاء رابط قصير للفيديو
+    do {
+    $shortCode = Str::random(6);
+} while (ShortLink::where('short_code', $shortCode)->exists());
     $shortLink = ShortLink::create([
-        'title' => $data['title'],
         'original_url' => $data['url'],
-        'short_code' => Str::random(6),
+        'short_code' => $shortCode,
         'clicks' => 0
     ]);
     $video = Video::create([
@@ -37,7 +37,8 @@ class VideoController extends Controller
         'short_link_id' => $shortLink->id,
     ]);
       return response()->json([
-        'message' => 'تم إضافة الفيديو والرابط القصير تلقائيًا',
+        'status'  => 'success',
+        'message' => 'تم إضافة الفيديو والرابط المختصر تلقائيًا',
         'video' => $video,
         'short_link' => $shortLink
     ], 201);
@@ -52,42 +53,34 @@ class VideoController extends Controller
                       ->firstOrFail();
 
         return response()->json([
+            'status'  => 'success',
             'data' => $video,
-            'short_url' => url('/s/' . $video->short_code)
+            'short_url' => $video->shortLink?->full_short_url,
         ]);
     }
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, $id)
     {
         $video = Video::findOrFail($id);
 
         $data = $request->validate([
-            'title' => 'required|string',
-            'description' => 'nullable|string',
-            'url' => 'required|url',
+            'title' => 'required|string|max:255',
+            'url' => 'required|url|max:255',
         ]);
         $video->update($data);
         return response()->json([
-            'message' => 'Video updated successfully',
+            'status'  => 'success',
+            'message' => 'تم تحديث الفيديو',
             'data' => $video
         ]);
     }
-
-    /**
-     * Remove the specified resource from storage.
-     */
    public function destroy($id)
     {
         $video = Video::findOrFail($id);
-
-        ShortLink::where('short_code', $video->short_code)->delete();
-
+        ShortLink::where('id', $video->short_link_id)->delete();
         $video->delete();
-
         return response()->json([
-            'message' => 'Video deleted successfully'
+            'status'  => 'success',
+            'message' => 'تم حذف الفيديو'
         ]);
     }
 }

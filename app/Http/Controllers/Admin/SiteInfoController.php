@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\SiteInfo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class SiteInfoController extends Controller
 {
@@ -11,9 +12,7 @@ class SiteInfoController extends Controller
     {
         return SiteInfo::all();
     }
-
-        public function store(Request $request)
-    {
+        public function store(Request $request) {
         $data = $request->validate([
             'site_name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -36,12 +35,16 @@ class SiteInfoController extends Controller
             SiteInfo::create($data);
         }
         return response()->json([
-            'message' => 'Site info created successfully',
+            'message' => 'نم تنفيذ طلبك',
             'data' => $siteInfo
         ]);
     }
     public function destroy(SiteInfo $siteInfo)
     {
+        if ($siteInfo->logo) {
+    Storage::disk('public')->delete($siteInfo->logo);
+    }
+
         $siteInfo->delete();
         return response()->noContent();
     }

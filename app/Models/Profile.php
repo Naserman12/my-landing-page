@@ -11,8 +11,6 @@ class Profile extends Model
         'bio',
         'avatar',
     ];
-    protected $hidden = ['user'];
-
     public function user()
     {
         return $this->belongsTo(User::class);

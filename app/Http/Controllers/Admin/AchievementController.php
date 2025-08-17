@@ -7,6 +7,7 @@ use App\Models\Achievement;
 use Illuminate\Support\Str;
 use App\Models\ShortLink;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class AchievementController extends Controller
 {
@@ -20,7 +21,7 @@ class AchievementController extends Controller
         $data = $request->validate([
             'title' => 'required|string',
             'description' => 'nullable|string',
-            'image' => 'nullable|image',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
         if ($request->hasFile('image')) {
                 $data['image'] = $request->file('image')->store('achievements', 'public');
@@ -28,15 +29,18 @@ class AchievementController extends Controller
          // حفظ الإنجاز
         $achievement = Achievement::create($data);
         // إنشاء رابط قصير تلقائي
-        $shortCode = Str::random(6);
+        do {
+            $shortCode = Str::random(6);
+        } while (ShortLink::where('short_code', $shortCode)->exists());
         $shortLink = ShortLink::create([
             'short_code' => $shortCode,
             'original_url' => url('/achievement/' . $achievement->id),
             'clicks' => 0
         ]);
+
          $achievement->update(['short_code' => $shortCode]);
          return response()->json([
-            'message' => 'Achievement created successfully',
+            'message' => 'تم إضافة الإنجاز',
             'data' => $achievement,
             'short_url' => url('/s/' . $shortCode),
             'short_link' => $shortLink
@@ -49,7 +53,7 @@ class AchievementController extends Controller
                     ->firstOrFail();
     return response()->json([
         'data' => $achievement,
-        'clicks' => ShortLink::where('short_code', $achievement->short_code),
+        'clicks' => ShortLink::where('short_code', $achievement->short_code)->value('clicks'),
         'short_url' => url('/s/' . $achievement->short_code),
     ]);
     }
@@ -59,11 +63,15 @@ class AchievementController extends Controller
     $data = $request->validate([
         'title' => 'required|string|max:255',
         'description' => 'nullable|string',
-        'image' => 'nullable|image',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
     ]);
-    if ($request->hasFile('image')) {
-        $data['image'] = $request->file('image')->store('achievements', 'public');
-    }
+     if ($request->hasFile('image')) {
+            // حذف الصورة القديمة إذا وجدت
+            if ($achievement->image) {
+                Storage::disk('public')->delete($achievement->image);
+            }
+            $data['image'] = $request->file('image')->store('achievements', 'public');
+        }
     $achievement->update($data);
     return response()->json([
         'message' => 'Achievement updated successfully',
@@ -74,11 +82,12 @@ class AchievementController extends Controller
         // احصائيات
     public function achievementStats($id){
         $achievement = Achievement::findOrFail($id);
-        $shortLink = ShortLink::where('code', $achievement->short_code)->first();
+        $shortLink = ShortLink::where('short_code', $achievement->short_code)->first();
+
         return response()->json([
-            'achievement' => $achievement->title,
-            'clicks' => $shortLink ? $shortLink->clicks : 0,
-            'short_url' => $shortLink ? url('/s/' . $shortLink->code) : null,
+            'achievement'   => $achievement->title,
+            'clicks'        => $shortLink?->clicks ?? 0,
+            'short_url'     => $shortLink?->full_short_url
         ]);
     }
     // حذف إنجاز (مدير فقط)
@@ -86,11 +95,12 @@ class AchievementController extends Controller
         $achievement = Achievement::findOrFail($id);
     // حذف الرابط القصير المرتبط
     ShortLink::where('short_code', $achievement->short_code)->delete();
-
+    if ($achievement->image) {
+    Storage::disk('public')->delete($achievement->image);
+    }
     $achievement->delete();
-
     return response()->json([
-        'message' => 'Achievement deleted successfully'
+        'message' => 'تم حذف الإنجاز'
       ]);
     }
 }

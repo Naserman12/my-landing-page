@@ -21,8 +21,8 @@ Route::get('/site-info', [SiteInfoController::class, 'index']);
 // achievements
 Route::get('/achievements', [AchievementController::class, 'index']);
 Route::get('/s/{id}', [AchievementController::class, 'show']);
-Route::get('/videos', [VideoController::class, 'index']);
 // videos
+Route::get('/videos', [VideoController::class, 'index']);
 Route::get('/s/{id}', [VideoController::class, 'show']);
 // contact 
 Route::middleware(['throttle:contact'])->post('/contact', [ContactController::class, 'store']);

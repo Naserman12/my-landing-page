@@ -17,13 +17,17 @@ class ShortLinkController extends Controller
         $data = $request->validate([
             'original_url' => 'required|url',
         ]);
+        // توليد كود فريد
+        do {
+            $shortCode = Str::random(6);
+        } while (ShortLink::where('short_code', $shortCode)->exists());
 
-        $shortCode = Str::random(6);
-
-        return ShortLink::create([
+        $shortLink = ShortLink::create([
             'original_url' => $data['original_url'],
             'short_code' => $shortCode,
         ]);
+
+        return response()->json(['data' =>$shortLink], 201);
     }
     public function redirect($code)
     {
@@ -32,24 +36,13 @@ class ShortLinkController extends Controller
         $shortLink->increment('clicks');
         return redirect()->away($shortLink->original_url);
     }
-
-    public function show($shortCode)
-    {
-        $shortLink = ShortLink::where('short_code', $shortCode)->firstOrFail();
-        $shortLink->increment('clicks');
-        return redirect($shortLink->original_url);
-    }
-    public function index()
-    {
-        //
-    }
     public function stats($code)
     {
-    $shortLink = ShortLink::where('code', $code)->firstOrFail();
-
-    return response()->json([
-        'original_url' => $shortLink->original_url,
-        'clicks' => $shortLink->clicks,
-    ]);
+         $shortLink = ShortLink::where('short_code', $code)->firstOrFail();
+        return response()->json([
+            'original_url' => $shortLink->original_url,
+            'clicks' => $shortLink->clicks,
+            'full_short_url' => $shortLink->full_short_url
+        ]);
     }
 }

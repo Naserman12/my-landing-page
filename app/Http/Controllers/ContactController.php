@@ -9,27 +9,24 @@ use Illuminate\Support\Facades\Validator;
 
 class ContactController extends Controller
 {
-    public function index()
-    {
+    public function index(){
           // عرض الرسائل (للمدير فقط)
          return response()->json(Contact::latest()->paginate(10));
     }
-    public function store(Request $request)
-    {
-         $data = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|email',
+    public function store(Request $request){
+        $validated = $request->validate([
+            'name'    => 'required|string|max:255',
+            'email'   => 'required|email',
             'subject' => 'nullable|string|max:255',
             'message' => 'required|string',
         ]);
-
-        if ($data->fails()) {
-         return response()->json([
-             'status' => 'error',
-             'errors' => $data->errors()
-         ], 422);
+        // إضافة الـ user_id لو المستخدم مسجل
+        if (Auth::check()) {
+            $validated['user_id'] = Auth::id();
         }
-        $contact = Contact::create($data->validate());
+        // حفظ IP المرسل
+        $validated['ip_address'] = $request->ip();
+        $contact = Contact::create($validated);
         return response()->json([
             'status'  => 'success',
             'message' => 'تم إرسال رسالتك بنجاح',
@@ -41,6 +38,6 @@ class ContactController extends Controller
         $contact = Contact::findOrFail($id);
         $contact->delete();
 
-        return response()->json(['message' => 'تم حذف الرسالة بنجاح']);
+        return response()->json(['status'  => 'success', 'message' => 'تم حذف الرسالة بنجاح']);
     }
 }
