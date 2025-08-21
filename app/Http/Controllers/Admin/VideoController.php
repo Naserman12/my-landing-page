@@ -14,13 +14,7 @@ class VideoController extends Controller
      * Display a listing of the resource.
      */
     public function index() {
-        //
-        $all_videos = Video::with('shortLink')->latest()->get();
-         return 
-         response()->json([
-                'status' => 'success',
-                'All Videos' => $all_videos,
-               ]);
+         return response()->json(Video::all());
     }
     public function store(Request $request){
        $data = $request->validate([
@@ -30,7 +24,7 @@ class VideoController extends Controller
     // إنشاء رابط قصير للفيديو
     do {
     $shortCode = Str::random(6);
-} while (ShortLink::where('short_code', $shortCode)->exists());
+    }while (ShortLink::where('short_code', $shortCode)->exists());
     $shortLink = ShortLink::create([
         'original_url' => $data['url'],
         'short_code' => $shortCode,

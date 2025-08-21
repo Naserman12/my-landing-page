@@ -14,11 +14,12 @@ class AchievementController extends Controller
      // عرض الإنجازات للجميع
     public function index()
     {
-        return 
-               response()->json([
-                'status' => 'success',
-                'All Achievements' =>Achievement::latest()->get(),
-               ]);
+         return response()->json(Achievement::all());
+        // return 
+        //        response()->json([
+        //         'status' => 'success',
+        //         'All Achievements' =>Achievement::latest()->get(),
+        //        ]);
     }
      // إضافة إنجاز (مدير فقط)
     public function store(Request $request) {

@@ -18,8 +18,6 @@ class ServiceController extends Controller
             'description' => 'nullable|string',
             'icon' => 'nullable|string',
         ]);
-
-
         if ($request->hasFile('icon')) {
             $data['icon'] = $request->file('icon')->store('services', 'public');
         }

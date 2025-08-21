@@ -6,8 +6,15 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 font-sans">
-    <header class="bg-white shadow p-4 text-center">
-        <h1 class="text-2xl font-bold">{{ $siteInfo->site_name ?? 'اسم الموقع' }}</h1>
+     <!-- النافبار -->
+  <nav class="bg-blue-600 p-4 text-white flex justify-between">
+    <a href="/dashboard" class="hover:underline"><h1 class="text-xl font-bold">لوحة التحكم</h1></a>
+    <a href="/" class="hover:underline"><h1 class="text-2xl font-bold">{{ $siteInfo->site_name ?? 'اسم الموقع' }}</h1></a>
+    @auth
+    <button id="logoutBtn" class="bg-red-600 text-white px-4 py-2 rounded">تسجيل الخروج</button>
+    @endauth
+</nav>
+<header class="bg-white shadow p-4 text-center">
         <p class="text-gray-600">{{ $siteInfo->description ?? 'لا يوجد' }}</p>
           @if($siteInfo && $siteInfo->logo)
         <img src="{{ asset('storage/'.$siteInfo->logo) }}" alt="شعار الموقع" class="mx-auto mt-2 h-16">
