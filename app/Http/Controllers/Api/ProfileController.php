@@ -21,7 +21,7 @@ public function update(Request $request){
     $request->validate([
         'full_name' => 'string|max:255',
         'bio' => 'string',
-        'avatar' => 'string|url',  // افتراضًا رابط، يمكن إضافة upload لاحقًا
+        'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',  // افتراضًا رابط، يمكن إضافة upload لاحقًا
     ]);
     $profile = $request->user()->profile;
     if (!$profile) {

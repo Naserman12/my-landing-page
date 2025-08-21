@@ -25,7 +25,7 @@ class AboutMeController extends Controller
     'vision'        => 'nullable|string',
     'skills'        => 'nullable|string',
     'email'         => 'nullable|email',
-    'phone'         => 'nullable|string',
+    'phone'         => 'nullable|regex:/^[0-9\-\+\s\(\)]+$/',
     ];
     $about = AboutMe::first();  
     if (!$about) {
