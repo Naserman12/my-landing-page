@@ -9,9 +9,6 @@ use Illuminate\Support\Str;
 
 class ShortLinkController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -26,18 +23,15 @@ class ShortLinkController extends Controller
             'original_url' => $data['original_url'],
             'short_code' => $shortCode,
         ]);
-
         return response()->json(['data' =>$shortLink], 201);
     }
-    public function redirect($code)
-    {
+    public function redirect($code){
         $shortLink = ShortLink::where('short_code', $code)->firstOrFail();
         // زيادة عداد النقرات
         $shortLink->increment('clicks');
         return redirect()->away($shortLink->original_url);
     }
-    public function stats($code)
-    {
+    public function stats($code){
          $shortLink = ShortLink::where('short_code', $code)->firstOrFail();
         return response()->json([
             'original_url' => $shortLink->original_url,

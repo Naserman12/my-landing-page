@@ -14,7 +14,11 @@ class AchievementController extends Controller
      // عرض الإنجازات للجميع
     public function index()
     {
-        return Achievement::latest()->get();
+        return 
+               response()->json([
+                'status' => 'success',
+                'All Achievements' =>Achievement::latest()->get(),
+               ]);
     }
      // إضافة إنجاز (مدير فقط)
     public function store(Request $request) {
@@ -27,35 +31,35 @@ class AchievementController extends Controller
                 $data['image'] = $request->file('image')->store('achievements', 'public');
          }
          // حفظ الإنجاز
-        $achievement = Achievement::create($data);
-        // إنشاء رابط قصير تلقائي
-        do {
-            $shortCode = Str::random(6);
-        } while (ShortLink::where('short_code', $shortCode)->exists());
-        $shortLink = ShortLink::create([
-            'short_code' => $shortCode,
-            'original_url' => url('/achievement/' . $achievement->id),
-            'clicks' => 0
-        ]);
-
+         // إنشاء رابط قصير تلقائي
+         do {
+             $shortCode = Str::random(6);
+            } while (ShortLink::where('short_code', $shortCode)->exists());
+            $shortLink = ShortLink::create([
+                'short_code' => $shortCode,
+                'original_url' => url('api/s/'.$shortCode),
+                'clicks' => 0
+            ]);
+         $achievement = Achievement::create($data);
          $achievement->update(['short_code' => $shortCode]);
          return response()->json([
             'message' => 'تم إضافة الإنجاز',
             'data' => $achievement,
-            'short_url' => url('/s/' . $shortCode),
+            'short_url' => url('api/s/'. $shortCode),
             'short_link' => $shortLink
-        ]);   
+         ],201);   
     }
-    public function show(string $id) {
+    public function show(string $code) {
         // البحث أولًا عن الإنجاز حسب short_code، إذا ما وجد جرب حسب الـ ID
-    $achievement = Achievement::where('short_code', $id)
-                    ->orWhere('id', $id)
-                    ->firstOrFail();
+    $achievement = Achievement::where('short_code', $code)->orWhere('id', $code)
+    ->firstOrFail();
+    $short_code = $achievement->short_code;
+    $shortLink = ShortLink::where('short_code', $short_code)->firstOrFail();
     return response()->json([
         'data' => $achievement,
-        'clicks' => ShortLink::where('short_code', $achievement->short_code)->value('clicks'),
-        'short_url' => url('/s/' . $achievement->short_code),
-    ]);
+        'short_code' => $shortLink,
+        // 'clicks' => $shortLink->clicks,
+    ],200);
     }
        // تعديل إنجاز (مدير فقط)
     public function update(Request $request, $id){
@@ -72,27 +76,40 @@ class AchievementController extends Controller
             }
             $data['image'] = $request->file('image')->store('achievements', 'public');
         }
-    $achievement->update($data);
+         // جلب الرابط القديم (إن وجد) قبل الحذف
+        $oldLink = ShortLink::where('short_code', $achievement->short_code)->first();
+        // الحفااظ على عدد النفرات
+        $clicks = $oldLink ? $oldLink->clicks : 0;
+         // حذف الرابط القصير القديم بدون علاقة
+        ShortLink::where('short_code', $achievement->short_code)->delete();
+         // إنشاء رابط قصير تلقائي
+        do {
+            $shortCode = Str::random(6);
+        } while (ShortLink::where('short_code', $shortCode)->exists());
+         $shortLink = ShortLink::create([
+            'short_code' => $shortCode,
+            'original_url' => $achievement->short_code,
+            'clicks' => $clicks
+        ]);
+        $achievement->update(['short_code' => $shortCode]);
+        $achievement->update($data);
     return response()->json([
         'message' => 'Achievement updated successfully',
         'data' => $achievement,
-        'short_url' => url('/s/' . $achievement->short_code)
-    ]);
+        'short_url' => url('api/s/'.$shortCode),
+        'short_link' => $shortLink,
+        'old_Short_Link' => $oldLink,
+    ],200);
 }
-        // احصائيات
-    public function achievementStats($id){
-        $achievement = Achievement::findOrFail($id);
-        $shortLink = ShortLink::where('short_code', $achievement->short_code)->first();
-
-        return response()->json([
-            'achievement'   => $achievement->title,
-            'clicks'        => $shortLink?->clicks ?? 0,
-            'short_url'     => $shortLink?->full_short_url
-        ]);
-    }
     // حذف إنجاز (مدير فقط)
     public function destroy($id){
         $achievement = Achievement::findOrFail($id);
+        if(!$achievement){
+            return response()->json([
+                'status' => 'Error',
+                'not found achievement',
+            ],404);
+        }
     // حذف الرابط القصير المرتبط
     ShortLink::where('short_code', $achievement->short_code)->delete();
     if ($achievement->image) {
@@ -101,6 +118,6 @@ class AchievementController extends Controller
     $achievement->delete();
     return response()->json([
         'message' => 'تم حذف الإنجاز'
-      ]);
+      ],204);
     }
 }

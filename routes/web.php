@@ -15,6 +15,8 @@ Route::get('/', function () {
         'videos' => Video::all(),
     ]);
 });
+// Route::get('/achievements', [AchievementController::class, 'index']);
+// Route::get('/achievements/{id}',  [AchievementController::class, 'show']);
 Route::POST('/login', [AuthController::class, 'login'])->name('login');
 Route::view('/login', 'login');
 Route::get('/dashboard', function () {

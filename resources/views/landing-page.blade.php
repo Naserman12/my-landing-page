@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>{{ $siteInfo->title ?? 'صفحة ترحيبية' }}</title>
+    <title>{{ $siteInfo->site_name ?? 'صفحة ترحيبية' }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 font-sans">
@@ -22,7 +22,7 @@
                         <h3 class="font-bold">{{ $a->title ?? 'لا يوجد' }}</h3>
                         <p>{{ $a->description ?? 'لا يوجد'}}</p>
                         @if($a->short_code)
-                        <a href="{{ url('api/s/'.$a->short_code) }}" class="text-blue-500">عرض المزيد</a>
+                        <a href="{{ url('/s/'.$a->short_code) }}" class="text-blue-500">عرض المزيد</a>
                         @endif
                     </div>
                 @endforeach

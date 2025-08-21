@@ -55,7 +55,6 @@
             <p id="siteMessage" class="text-sm mt-2 hidden"></p>
         </form>
     </div>
-
         <!-- فورم إضافة إنجاز -->
         <div class="bg-white p-4 rounded-lg shadow mb-6">
             <h2 class="text-lg font-bold mb-4">إضافة إنجاز</h2>
@@ -66,7 +65,6 @@
                 <button class="bg-blue-500 text-white px-4 py-2 rounded">إضافة</button>
             </form>
         </div>
-
         <!-- جدول الإنجازات -->
         <div class="bg-white p-4 rounded-lg shadow mb-6">
             <h2 class="text-lg font-bold mb-4">الإنجازات</h2>
@@ -83,7 +81,6 @@
                 <tbody id="achievements-table"></tbody>
             </table>
         </div>
-
         <!-- فورم إضافة فيديو -->
         <div class="bg-white p-4 rounded-lg shadow mb-6">
             <h2 class="text-lg font-bold mb-4">إضافة فيديو</h2>

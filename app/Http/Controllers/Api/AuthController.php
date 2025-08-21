@@ -69,7 +69,6 @@ class AuthController extends Controller
     }
     // احذف التوكن
     $token->delete();
-
     return response()->json(['status'  => 'success', 'message' => 'تم تسجيل الخروج'], 200);
 }
 

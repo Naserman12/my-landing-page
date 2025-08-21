@@ -45,7 +45,21 @@ class SiteInfoController extends Controller
     Storage::disk('public')->delete($siteInfo->logo);
     }
 
-        $siteInfo->delete();
-        return response()->noContent();
+       $del = $siteInfo->delete();
+       if(!$del){
+        return response()->json([
+            'status' => 'Error',
+            'message' => 'حذث خطأ لم يتم الحذف',
+        ]);
+    }
+    SiteInfo::create([
+        'site_name' => 'اسم الموقع',
+        'description' => 'معلومات الموقع',
+        'logo' => null,
+    ]);
+    return response()->json([
+            'status' => 'success',
+            'message' => 'تم حذف معلومات الموقع',   
+        ]);
     }
 }

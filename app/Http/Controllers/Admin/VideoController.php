@@ -15,7 +15,12 @@ class VideoController extends Controller
      */
     public function index() {
         //
-         return Video::with('shortLink')->latest()->get();
+        $all_videos = Video::with('shortLink')->latest()->get();
+         return 
+         response()->json([
+                'status' => 'success',
+                'All Videos' => $all_videos,
+               ]);
     }
     public function store(Request $request){
        $data = $request->validate([
@@ -42,10 +47,7 @@ class VideoController extends Controller
         'video' => $video,
         'short_link' => $shortLink
     ], 201);
-} 
-    /**
-     * Display the specified resource.
-     */
+    }
     public function show(string $id)
     {
          $video = Video::where('short_link_id', $id)
@@ -56,7 +58,7 @@ class VideoController extends Controller
             'status'  => 'success',
             'data' => $video,
             'short_url' => $video->shortLink?->full_short_url,
-        ]);
+        ],200);
     }
     public function update(Request $request, $id)
     {
@@ -66,21 +68,48 @@ class VideoController extends Controller
             'title' => 'required|string|max:255',
             'url' => 'required|url|max:255',
         ]);
-        $video->update($data);
+         // جلب الرابط القديم (إن وجد) قبل الحذف
+        $oldLink =  $video->shortLink()->first();
+        // الحفااظ على عدد النفرات
+        $clicks = $oldLink ? $oldLink->clicks : 0;
+        // حذف الرابط القديم
+         $video->shortLink()->delete();
+            // إنشاء رابط قصير للفيديو
+        do {
+        $shortCode = Str::random(6);
+        } while (ShortLink::where('short_code', $shortCode)->exists());
+        $shortLink = ShortLink::create([
+            'original_url' => $data['url'],
+            'short_code' => $shortCode,
+            'clicks' => $clicks
+        ]);
+        $video->update([
+            'title' => $data['title'],
+            'url' => $data['url'],
+            'short_link_id' => $shortLink->id,
+        ]);
         return response()->json([
             'status'  => 'success',
             'message' => 'تم تحديث الفيديو',
-            'data' => $video
-        ]);
+            'data' => $video,
+            'short_link' => $shortLink,
+            'oldLink' => $oldLink,
+        ],200);
     }
    public function destroy($id)
     {
         $video = Video::findOrFail($id);
+         if(!$video){
+            return response()->json([
+                'status' => 'Error',
+                'not found achievement',
+            ],404);
+         }
         ShortLink::where('id', $video->short_link_id)->delete();
         $video->delete();
         return response()->json([
             'status'  => 'success',
             'message' => 'تم حذف الفيديو'
-        ]);
+        ],204);
     }
 }
