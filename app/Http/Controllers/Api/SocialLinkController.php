@@ -17,18 +17,14 @@ class SocialLinkController extends Controller
             'platform' => 'required|string|max:50',
             'url' => 'required|url',
         ]);
-
         $social = SocialLink::create($data);
-
         return response()->json($social, 201);
     }
-    public function show($id)
-    {
+    public function show($id) {
         $social = SocialLink::findOrFail($id);
         return response()->json([$social, 'Icon' => $social->icon]);
     }
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id){
         $data = $request->validate([
             'platform' => 'sometimes|string|max:50',
             'url' => 'sometimes|url',
