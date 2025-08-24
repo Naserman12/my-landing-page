@@ -9,16 +9,19 @@ use App\Models\Achievement;
 use App\Models\Video;
 
 Route::get('/', function () {
-    return view('landing-page', [
-        'siteInfo' => SiteInfo::first(),
-        'achievements' => Achievement::all(),
-        'videos' => Video::all(),
-    ]);
+    return view('welcome');
 });
+// Route::get('/', function () {
+//     return view('landing-page', [
+//         'siteInfo' => SiteInfo::first(),
+//         'achievements' => Achievement::all(),
+//         'videos' => Video::all(),
+//     ]);
+// });
 // Route::get('/achievements', [AchievementController::class, 'index']);
 // Route::get('/achievements/{id}',  [AchievementController::class, 'show']);
-Route::POST('/login', [AuthController::class, 'login'])->name('login');
-Route::view('/login', 'login');
+Route::POST('/login', [AuthController::class, 'login']);
+Route::view('/login', 'login')->middleware('guest')->name('login');
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');

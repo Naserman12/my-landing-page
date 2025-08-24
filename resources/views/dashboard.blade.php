@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>لوحة التحكم</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+   @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-gray-100 min-h-screen">
 
@@ -139,10 +139,10 @@
   </div>
 
   <script>
-    const API_URL = "http://127.0.0.1:8000/api/admin"; // غيره عند رفع المشروع
+    const API_URL = "http://127.0.0.1:8000/api/admin"; // 
     // تأكد من تسجيل الدخول
     document.addEventListener("DOMContentLoaded", () => {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem('token');
       if (!token) {
         window.location.href = "/login";
       } else {
@@ -156,16 +156,16 @@
         method: "POST",
         headers: {
             "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json"
-        }
-    });
+            "Content-Type": "application/json",
+        } 
+        });
 
     // احذف التوكن من التخزين
     localStorage.removeItem("token");
 
     // حوّل لصفحة تسجيل الدخول
     window.location.href = "/login";
-})
+    });
 
     // جلب الإحصائيات والجداول
     async function fetchStats() {
